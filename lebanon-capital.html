@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lebanon Capital — الاستثمار الذكي</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+      colors: {
+        /* Original site accent: oklch(0.45 0.15 15) ≈ deep warm crimson */
+        accent:       '#8C2828',
+        'accent-lit': '#b03535',
+        'accent-dk':  '#6b1e1e',
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { font-family: 'Tajawal', sans-serif; }
+
+  /* ── Ticker ── */
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-inner { animation: ticker 35s linear infinite; }
+  .ticker-wrap:hover .ticker-inner { animation-play-state: paused; }
+
+  /* ── Fade-up on scroll ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .65s ease, transform .65s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Gradient text — warm red ── */
+  .grad-text {
+    background: linear-gradient(135deg, #8C2828, #c04040, #e06060);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Glow button ── */
+  .btn-glow {
+    box-shadow: 0 0 22px rgba(140,40,40,.40);
+    transition: box-shadow .3s, transform .2s;
+  }
+  .btn-glow:hover {
+    box-shadow: 0 0 42px rgba(140,40,40,.60);
+    transform: translateY(-2px);
+  }
+
+  /* ── Scroll bar ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #8C2828; border-radius: 99px; }
+
+  /* ── Nav link underline ── */
+  .nav-link { position: relative; }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0; right: 0;
+    height: 2px;
+    background: #8C2828;
+    border-radius: 99px;
+    transform: scaleX(0);
+    transition: transform .25s ease;
+  }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* ── FAQ accordion ── */
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s ease;
+  }
+  .faq-answer.open { max-height: 400px; }
+  .faq-chevron { transition: transform .3s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  /* ── Mobile menu ── */
+  #mobile-nav {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  #mobile-nav.open { max-height: 500px; }
+
+  /* ── Floating blobs ── */
+  @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+  @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .float1 { animation: float1 5s ease-in-out infinite; }
+  .float2 { animation: float2 7s ease-in-out infinite; }
+
+  section { scroll-margin-top: 72px; }
+</style>
+</head>
+
+<!--
+  Color palette (matches original):
+  Light bg:       #f5f3ef  (oklch 0.96 0.001 65 — warm cream)
+  Light bg-alt:   #eeece8
+  Dark bg:        #1e1b14  (oklch 0.18 0.005 65 — dark warm)
+  Dark bg-alt:    #252219
+  Dark card:      #2f2c22  (oklch 0.25 0.006 65)
+  Dark text muted:#9a9283
+  Accent:         #8C2828  (oklch 0.45 0.15 15 — warm crimson)
+  Accent lit:     #b03535  (oklch 0.55 0.15 15)
+-->
+<body class="bg-[#f5f3ef] dark:bg-[#1e1b14] text-[#1a1613] dark:text-[#e8e4da] antialiased">
+
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <div class="bg-[#f5f3ef]/85 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+          </svg>
+        </div>
+        <span class="font-bold text-lg">Lebanon <span class="text-accent">Capital</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-medium">
+        <a href="#hero"      class="nav-link hover:text-accent transition-colors">الرئيسية</a>
+        <a href="#ai"        class="nav-link hover:text-accent transition-colors">نظام الذكاء الاصطناعي</a>
+        <a href="#features"  class="nav-link hover:text-accent transition-colors">المميزات</a>
+        <a href="#plans"     class="nav-link hover:text-accent transition-colors">الخطط</a>
+        <a href="#reviews"   class="nav-link hover:text-accent transition-colors">التقييمات</a>
+        <a href="#markets"   class="nav-link hover:text-accent transition-colors">الأسواق</a>
+        <a href="#faq"       class="nav-link hover:text-accent transition-colors">الأسئلة</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg" aria-label="وضع مظلم">
+          <span id="dark-icon">🌙</span>
+        </button>
+        <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+          class="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent-dk text-white text-sm font-semibold px-4 py-2 rounded-xl btn-glow transition">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          تحدث معنا
+        </a>
+        <button onclick="toggleMenu()" class="lg:hidden w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobile-nav">
+      <nav class="px-5 pb-4 flex flex-col gap-1 text-sm font-medium border-t border-black/5 dark:border-white/5 pt-3">
+        <a href="#hero"     onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">الرئيسية</a>
+        <a href="#ai"       onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">نظام الذكاء الاصطناعي</a>
+        <a href="#features" onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">المميزات</a>
+        <a href="#plans"    onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">الخطط</a>
+        <a href="#reviews"  onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">التقييمات</a>
+        <a href="#markets"  onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">الأسواق</a>
+        <a href="#faq"      onclick="toggleMenu()" class="px-3 py-2.5 rounded-lg hover:bg-accent/10 hover:text-accent transition">الأسئلة الشائعة</a>
+        <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank" class="mt-2 flex items-center justify-center gap-2 bg-accent text-white font-semibold px-4 py-2.5 rounded-xl btn-glow">
+          تحدث معنا عبر واتساب
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ TICKER ═══════════════════════════ -->
+<div class="pt-16">
+  <div class="ticker-wrap bg-accent overflow-hidden py-2 select-none">
+    <div class="ticker-inner flex whitespace-nowrap gap-10 w-max text-white text-sm font-semibold">
+      <span class="flex gap-10">
+        <span>🥇 GOLD <strong>$3,422.93</strong> <span class="text-green-200">+1.0%</span></span>
+        <span>🥈 SILVER <strong>$39.50</strong> <span class="text-red-200">-0.5%</span></span>
+        <span>🛢 USOIL <strong>$75.11</strong> <span class="text-green-200">+0.3%</span></span>
+        <span>🚗 TESLA <strong>$411.87</strong> <span class="text-green-200">+1.9%</span></span>
+        <span>🍎 APPLE <strong>$231.78</strong> <span class="text-green-200">+0.8%</span></span>
+        <span>🪟 MICROSOFT <strong>$524.34</strong> <span class="text-green-200">+1.4%</span></span>
+        <span>💶 EUR/USD <strong>$1.95</strong> <span class="text-green-200">+0.7%</span></span>
+        <span>💷 GBP/USD <strong>$2.54</strong> <span class="text-red-200">-0.3%</span></span>
+      </span>
+      <span class="flex gap-10" aria-hidden="true">
+        <span>🥇 GOLD <strong>$3,422.93</strong> <span class="text-green-200">+1.0%</span></span>
+        <span>🥈 SILVER <strong>$39.50</strong> <span class="text-red-200">-0.5%</span></span>
+        <span>🛢 USOIL <strong>$75.11</strong> <span class="text-green-200">+0.3%</span></span>
+        <span>🚗 TESLA <strong>$411.87</strong> <span class="text-green-200">+1.9%</span></span>
+        <span>🍎 APPLE <strong>$231.78</strong> <span class="text-green-200">+0.8%</span></span>
+        <span>🪟 MICROSOFT <strong>$524.34</strong> <span class="text-green-200">+1.4%</span></span>
+        <span>💶 EUR/USD <strong>$1.95</strong> <span class="text-green-200">+0.7%</span></span>
+        <span>💷 GBP/USD <strong>$2.54</strong> <span class="text-red-200">-0.3%</span></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section id="hero" class="relative min-h-[90vh] flex items-center overflow-hidden bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-10 right-[10%] w-[500px] h-[500px] bg-accent/6 rounded-full blur-3xl float1"></div>
+    <div class="absolute bottom-0 left-[5%] w-[350px] h-[350px] bg-[#c04040]/5 rounded-full blur-3xl float2"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-5 py-20 w-full relative z-10">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Text -->
+      <div class="space-y-7 fade-up">
+        <div class="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-semibold">
+          <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+          نظام ذكاء اصطناعي يعمل 24/7
+        </div>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+          ابدأ من
+          <span class="grad-text">250$</span>
+          وابني رحلتك نحو
+          <span class="grad-text">الاستقرار المالي</span>
+        </h1>
+        <p class="text-lg text-[#5a4f44] dark:text-[#9a9283] leading-relaxed max-w-lg">
+          استثمر بذكاء مع نظام آلي متطور يعمل على مدار الساعة لتحقيق أحلامك المالية والاستقرار الاقتصادي.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+            class="flex items-center gap-2 bg-accent hover:bg-accent-dk text-white font-bold px-7 py-3.5 rounded-2xl btn-glow transition">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            ابدأ رحلتك الآن
+          </a>
+          <a href="#ai"
+            class="flex items-center gap-2 border-2 border-accent text-accent hover:bg-accent/8 font-bold px-7 py-3.5 rounded-2xl transition">
+            اعرف أكثر
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7-7-7 7-7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats card -->
+      <div class="fade-up" style="transition-delay:.15s">
+        <div class="bg-white dark:bg-[#2f2c22] border border-black/6 dark:border-white/6 rounded-3xl p-8 shadow-xl shadow-accent/5 space-y-6">
+          <p class="text-center text-xs text-[#9a8a7a] dark:text-[#6a6050] font-semibold uppercase tracking-widest">إحصائياتنا</p>
+          <div class="grid grid-cols-2 gap-5">
+            <div class="bg-[#f5f0ec] dark:bg-accent/10 rounded-2xl p-5 text-center">
+              <p class="text-3xl font-black text-accent">$250</p>
+              <p class="text-xs text-[#7a6a5a] dark:text-[#8a7a6a] mt-1 font-medium">الاستثمار الأولي</p>
+            </div>
+            <div class="bg-[#f5f0ec] dark:bg-accent/10 rounded-2xl p-5 text-center">
+              <p class="text-3xl font-black text-accent">94%</p>
+              <p class="text-xs text-[#7a6a5a] dark:text-[#8a7a6a] mt-1 font-medium">معدل النجاح</p>
+            </div>
+            <div class="bg-[#f5f0ec] dark:bg-accent/10 rounded-2xl p-5 text-center">
+              <p class="text-3xl font-black text-accent">24h</p>
+              <p class="text-xs text-[#7a6a5a] dark:text-[#8a7a6a] mt-1 font-medium">سرعة السحب</p>
+            </div>
+            <div class="bg-[#f5f0ec] dark:bg-accent/10 rounded-2xl p-5 text-center">
+              <p class="text-3xl font-black text-accent">$1,800</p>
+              <p class="text-xs text-[#7a6a5a] dark:text-[#8a7a6a] mt-1 font-medium">الدخل الشهري</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-center gap-2 text-xs text-[#9a8a7a] dark:text-[#6a6050]">
+            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            السوق مفتوح — يعمل الآن
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ AI SYSTEM ═══════════════════════════ -->
+<section id="ai" class="py-24 px-5 bg-white dark:bg-[#252219]">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">التكنولوجيا</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">نظامك الذكي لبناء الاستقرار المالي</h2>
+      <p class="text-[#6a5a4a] dark:text-[#9a9283] text-lg max-w-2xl mx-auto">تكنولوجيا متقدمة تعمل 24/7 لتحقيق استقرارك المالي وحماية استثماراتك.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.05s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">يحلل مليون نقطة بيانات / الثانية</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">معالجة فائقة السرعة لبيانات السوق في الوقت الفعلي لاتخاذ أفضل القرارات.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.1s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">يتنبأ بحركات السوق بدقة عالية</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">خوارزميات ذكية تتعلم من الأنماط التاريخية وتتوقع الاتجاهات المستقبلية.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.15s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">ينفذ الصفقات في اللحظة المثالية</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">تنفيذ فوري للصفقات بأفضل الأسعار دون أي تأخير أو تدخل بشري.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.2s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">يدير المخاطر ويحمي فلوسك</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">إدارة متطورة للمخاطر تضمن حماية رأس مالك في جميع ظروف السوق.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.25s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">يشتغل 24/7 بدون توقف</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">لا يأخذ إجازات ولا ينام — يعمل باستمرار لمضاعفة أرباحك اليومية.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 p-6 bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-accent/8 fade-up hover:border-accent/25 transition-colors" style="transition-delay:.3s">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg mb-1">يحقق أرباح يومية مستمرة</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">دخل متراكم يومياً مع إمكانية السحب الفوري في أي وقت خلال 24 ساعة.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
+<section id="features" class="py-24 px-5 bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">لماذا نحن</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">المميزات التي تجعلنا الأفضل</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.05s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">نظام ذكي متقدم</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">تقنيات الذكاء الاصطناعي الحديثة لتحليل السوق بدقة لا مثيل لها.</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.1s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">دخل مستمر</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">احصل على أرباح يومية وأسبوعية وشهرية بشكل منتظم ومستدام.</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.15s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">سرعة البرق</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">تنفيذ فوري للصفقات في أفضل الأوقات بأسرع معالجة ممكنة.</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.2s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">حماية رأس المال</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">إدارة متقدمة للمخاطر وحماية كاملة لاستثماراتك في جميع الظروف.</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.25s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">عوائد عالية</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">معدل نجاح 94% مع عوائد شهرية تتراوح بين 8–15%.</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all fade-up" style="transition-delay:.3s">
+        <div class="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-accent/25">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">دقة عالية</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">تحليل دقيق للأسواق والتنبؤ بالحركات قبل حدوثها بوقت كافٍ.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ STATS BAND ═══════════════════════════ -->
+<section class="py-16 px-5 bg-accent">
+  <div class="max-w-4xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+      <div class="fade-up">
+        <p class="text-4xl font-black mb-1">5,000+</p>
+        <p class="text-white/70 text-sm font-medium">عملاء سعداء</p>
+      </div>
+      <div class="fade-up" style="transition-delay:.08s">
+        <p class="text-4xl font-black mb-1">$15M+</p>
+        <p class="text-white/70 text-sm font-medium">أرباح محققة</p>
+      </div>
+      <div class="fade-up" style="transition-delay:.16s">
+        <p class="text-4xl font-black mb-1">94%</p>
+        <p class="text-white/70 text-sm font-medium">معدل النجاح</p>
+      </div>
+      <div class="fade-up" style="transition-delay:.24s">
+        <p class="text-4xl font-black mb-1">24hr</p>
+        <p class="text-white/70 text-sm font-medium">سرعة السحب</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PLANS ═══════════════════════════ -->
+<section id="plans" class="py-24 px-5 bg-white dark:bg-[#252219]">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">الخطط</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">اختر خطتك نحو الاستقرار المالي</h2>
+      <p class="text-[#6a5a4a] dark:text-[#9a9283] max-w-xl mx-auto">سواء بدأت صغيراً أو كبيراً، نظامنا يعمل لصالحك في كلتا الحالتين.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Plan 1 -->
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-3xl p-8 border-2 border-black/5 dark:border-white/5 hover:border-accent/35 transition-colors fade-up">
+        <div class="mb-6">
+          <p class="text-accent text-xs font-bold uppercase tracking-wider mb-2">للمبتدئين</p>
+          <h3 class="text-2xl font-black mb-1">الاستقرار الإضافي</h3>
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm">للناس اللي بدها تحسن وضعها المالي بجانب شغلها</p>
+        </div>
+        <div class="flex items-end gap-2 mb-6">
+          <span class="text-4xl font-black text-accent">$250</span>
+          <span class="text-[#9a8a7a] mb-1">استثمار أولي</span>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium">دخل شهري $1,800 – $3,000</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium">يحلل مليون نقطة بيانات / الثانية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium">يتنبأ بحركات السوق بدقة عالية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium">ينفذ الصفقات في اللحظة المثالية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium">سحب فوري خلال 24 ساعة</span>
+          </div>
+        </div>
+        <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+          class="w-full flex items-center justify-center gap-2 border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold py-3.5 rounded-2xl transition-all">
+          ابدأ رحلتك الآن
+        </a>
+      </div>
+
+      <!-- Plan 2 — Featured -->
+      <div class="relative bg-accent rounded-3xl p-8 shadow-2xl shadow-accent/25 fade-up" style="transition-delay:.1s">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1.5 rounded-full whitespace-nowrap">
+          ⭐ الأكثر شعبية
+        </div>
+        <div class="mb-6">
+          <p class="text-white/60 text-xs font-bold uppercase tracking-wider mb-2">للاستقرار الكامل</p>
+          <h3 class="text-2xl font-black text-white mb-1">الاستقرار الكامل</h3>
+          <p class="text-white/70 text-sm">للناس اللي بدها تحقق استقرار مالي كامل من الاستثمار</p>
+        </div>
+        <div class="flex items-end gap-2 mb-6">
+          <span class="text-4xl font-black text-white">$5,000</span>
+          <span class="text-white/60 mb-1">استثمار أولي</span>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium text-white">دخل شهري $1,800 – $3,000+</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium text-white">يحلل مليون نقطة بيانات / الثانية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium text-white">أولوية في تنفيذ الصفقات</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium text-white">استشارة شخصية مخصصة</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm font-medium text-white">سحب فوري خلال 24 ساعة</span>
+          </div>
+        </div>
+        <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+          class="w-full flex items-center justify-center gap-2 bg-white text-accent hover:bg-[#f5f0ec] font-bold py-3.5 rounded-2xl transition-all">
+          ابدأ رحلتك الآن
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ HOW IT WORKS ═══════════════════════════ -->
+<section class="py-24 px-5 bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">الطريق</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">رحلتك نحو الاستقرار المالي — 4 خطوات</h2>
+      <p class="text-[#6a5a4a] dark:text-[#9a9283]">ابدأ من اليوم وبني استقرارك المالي بخطوات بسيطة وواضحة.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center fade-up" style="transition-delay:.05s">
+        <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-accent/25">
+          <span class="text-white font-black text-2xl">1</span>
+        </div>
+        <h3 class="font-bold text-lg mb-2">فتح حسابك</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">ابدأ برأس مال من 250$ فقط وابدأ رحلتك نحو الاستقرار.</p>
+      </div>
+      <div class="text-center fade-up" style="transition-delay:.1s">
+        <div class="w-16 h-16 bg-accent/15 border-2 border-accent rounded-2xl flex items-center justify-center mx-auto mb-5">
+          <span class="text-accent font-black text-2xl">2</span>
+        </div>
+        <h3 class="font-bold text-lg mb-2">استشارة شخصية</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">احصل على استشارة مخصصة من فريقنا المتخصص.</p>
+      </div>
+      <div class="text-center fade-up" style="transition-delay:.15s">
+        <div class="w-16 h-16 bg-accent/15 border-2 border-accent rounded-2xl flex items-center justify-center mx-auto mb-5">
+          <span class="text-accent font-black text-2xl">3</span>
+        </div>
+        <h3 class="font-bold text-lg mb-2">راقب نموك المالي</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">تابع نمو استثمارك يومياً عبر لوحة تحكم متقدمة.</p>
+      </div>
+      <div class="text-center fade-up" style="transition-delay:.2s">
+        <div class="w-16 h-16 bg-accent/15 border-2 border-accent rounded-2xl flex items-center justify-center mx-auto mb-5">
+          <span class="text-accent font-black text-2xl">4</span>
+        </div>
+        <h3 class="font-bold text-lg mb-2">تحقق استقرارك</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed">استمتع بدخل ثابت ومستقر شهرياً وحقق أحلامك.</p>
+      </div>
+    </div>
+
+    <div class="mt-14 text-center fade-up">
+      <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+        class="inline-flex items-center gap-2 bg-accent hover:bg-accent-dk text-white font-bold px-8 py-4 rounded-2xl btn-glow transition text-lg">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تحدث معنا الآن عبر واتساب — احصل على استشارة مجانية
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TESTIMONIALS ═══════════════════════════ -->
+<section id="reviews" class="py-24 px-5 bg-white dark:bg-[#252219]">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">قصص نجاح</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">آلاف اللبنانيين حققوا أحلامهم معنا</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.04s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"بدأت بـ 250$ فقط والآن أحصل على 1800$ شهري. النظام الذكي يشتغل بدون ما أقلق!"</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">ع</div>
+            <div><p class="font-semibold text-sm">علي</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">بيروت</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+45%</span>
+        </div>
+      </div>
+
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.08s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"جعلت هذا دخلي الأساسي! الأرباح تدخل حسابي كل أسبوع والسحب فوري في 24 ساعة."</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">ف</div>
+            <div><p class="font-semibold text-sm">فاطمة</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">طرابلس</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+52%</span>
+        </div>
+      </div>
+
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.12s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"ما كنت أصدق إن النظام الآلي يحقق أرباح كتير. الآن خليت الفلوس تشتغل لحالها!"</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">م</div>
+            <div><p class="font-semibold text-sm">محمود</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">صيدا</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+38%</span>
+        </div>
+      </div>
+
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.16s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"بدأت بـ 250$ وفي 3 أشهر وصلت أرباحي إلى 1500$. النظام فعلاً يستحق!"</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">ح</div>
+            <div><p class="font-semibold text-sm">حسن</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">جونية</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+61%</span>
+        </div>
+      </div>
+
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.2s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"أنا موظفة وهذا الدخل الإضافي ساعدني كتير. شكراً على هذه الفرصة الرائعة!"</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">ل</div>
+            <div><p class="font-semibold text-sm">ليلى</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">صور</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+48%</span>
+        </div>
+      </div>
+
+      <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 fade-up" style="transition-delay:.24s">
+        <div class="flex gap-1 mb-4">⭐⭐⭐⭐⭐</div>
+        <p class="text-[#5a4a3a] dark:text-[#b8b0a0] text-sm leading-relaxed mb-4">"أفضل قرار اتخذته هذا السنة. الأرباح تدخل كل يوم والسحب فوري دون أي تعقيد."</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">أ</div>
+            <div><p class="font-semibold text-sm">أحمد</p><p class="text-xs text-[#9a8a7a] dark:text-[#6a6050]">البقاع</p></div>
+          </div>
+          <span class="text-green-600 dark:text-green-500 font-bold text-sm">+58%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MARKETS ═══════════════════════════ -->
+<section id="markets" class="py-24 px-5 bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">الأسواق</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">أسواق عالمية متنوعة</h2>
+      <p class="text-[#6a5a4a] dark:text-[#9a9283]">تداول في أكثر من 50 أداة مالية عبر أسواق عالمية متعددة.</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.04s">
+        <div class="text-3xl mb-2">🥇</div>
+        <p class="font-bold text-sm">الذهب</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">تداول المعادن</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.08s">
+        <div class="text-3xl mb-2">🥈</div>
+        <p class="font-bold text-sm">الفضة</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">المعادن النفيسة</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.12s">
+        <div class="text-3xl mb-2">🛢</div>
+        <p class="font-bold text-sm">النفط</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">الطاقة العالمية</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.16s">
+        <div class="text-3xl mb-2">📈</div>
+        <p class="font-bold text-sm">الأسهم</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">تسلا، آبل، مايكروسوفت</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.2s">
+        <div class="text-3xl mb-2">💱</div>
+        <p class="font-bold text-sm">سوق الصرف</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">أزواج العملات</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 text-center border border-black/5 dark:border-white/5 hover:border-accent/35 hover:-translate-y-1 transition-all fade-up" style="transition-delay:.24s">
+        <div class="text-3xl mb-2">🌐</div>
+        <p class="font-bold text-sm">المؤشرات</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">ناسداك، داو جونز</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FAQ ═══════════════════════════ -->
+<section id="faq" class="py-24 px-5 bg-white dark:bg-[#252219]">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="text-accent text-sm font-bold uppercase tracking-widest">الأسئلة الشائعة</span>
+      <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">كل ما تحتاج معرفته</h2>
+      <p class="text-[#6a5a4a] dark:text-[#9a9283]">آلاف اللبنانيين حققوا أحلامهم معنا — إليك الإجابات.</p>
+    </div>
+
+    <div class="space-y-3 fade-up">
+      <div class="faq-item bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-right font-bold text-lg hover:text-accent transition-colors">
+          هل الاستثمار آمن؟
+          <svg class="faq-chevron w-5 h-5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed pb-5">نعم، نظامنا يتضمن إدارة متقدمة للمخاطر تضمن حماية رأس مالك. نحن نطبق أفضل المعايير التقنية لحماية استثماراتك في جميع ظروف السوق. استثمارك آمن وأموالك محمية بالكامل.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-right font-bold text-lg hover:text-accent transition-colors">
+          كم الحد الأدنى للاستثمار؟
+          <svg class="faq-chevron w-5 h-5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed pb-5">الحد الأدنى للاستثمار هو 250$ فقط. يمكنك البدء بهذا المبلغ والحصول على دخل شهري يتراوح بين 1,800$ و3,000$. إذا أردت استقراراً مالياً كاملاً، يُنصح بالبدء من 5,000$.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-right font-bold text-lg hover:text-accent transition-colors">
+          كم الأرباح الشهرية؟
+          <svg class="faq-chevron w-5 h-5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed pb-5">يحقق نظامنا عوائد شهرية تتراوح بين 8–15% من قيمة الاستثمار بمعدل نجاح 94%. الدخل الشهري المتوقع يتراوح بين 1,800$ و3,000$ أو أكثر حسب قيمة الاستثمار.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-right font-bold text-lg hover:text-accent transition-colors">
+          كم وقت السحب؟
+          <svg class="faq-chevron w-5 h-5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm leading-relaxed pb-5">السحب فوري ويستغرق 24 ساعة فقط. يمكنك طلب سحب أموالك في أي وقت وسيتم معالجة الطلب خلال يوم عمل واحد فقط دون أي تعقيدات.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CTA BAND ═══════════════════════════ -->
+<section class="py-20 px-5 bg-gradient-to-br from-accent to-accent-dk">
+  <div class="max-w-3xl mx-auto text-center fade-up">
+    <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+      جاهز لبناء استقرارك المالي؟
+    </h2>
+    <p class="text-white/70 text-lg mb-10">تحدث معنا الآن عبر واتساب واحصل على استشارة مجانية.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank"
+        class="flex items-center justify-center gap-2 bg-white text-accent hover:bg-[#f5f0ec] font-bold px-8 py-4 rounded-2xl transition text-lg shadow-xl">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        أرسل رسالة عبر واتساب
+      </a>
+      <a href="#plans"
+        class="flex items-center justify-center gap-2 border-2 border-white text-white hover:bg-white/10 font-bold px-8 py-4 rounded-2xl transition text-lg">
+        احجز استشارتك المجانية
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="bg-[#160f0a] text-white py-16 px-5">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <div class="md:col-span-2 space-y-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          </div>
+          <span class="font-bold text-xl">Lebanon Capital</span>
+        </div>
+        <p class="text-white/45 text-sm leading-relaxed max-w-xs">منصتك الموثوقة لبناء استقرارك المالي والاستثمار الذكي باستخدام أحدث تقنيات الذكاء الاصطناعي.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-xl bg-white/8 hover:bg-accent transition flex items-center justify-center text-xs font-bold">f</a>
+          <a href="#" class="w-9 h-9 rounded-xl bg-white/8 hover:bg-accent transition flex items-center justify-center text-xs font-bold">in</a>
+          <a href="#" class="w-9 h-9 rounded-xl bg-white/8 hover:bg-accent transition flex items-center justify-center text-xs font-bold">@</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="font-bold mb-4 text-accent">الروابط السريعة</p>
+        <ul class="space-y-2.5 text-sm text-white/50">
+          <li><a href="#hero"     class="hover:text-white transition">الرئيسية</a></li>
+          <li><a href="#ai"       class="hover:text-white transition">نظام الذكاء الاصطناعي</a></li>
+          <li><a href="#features" class="hover:text-white transition">المميزات</a></li>
+          <li><a href="#reviews"  class="hover:text-white transition">التقييمات</a></li>
+          <li><a href="#faq"      class="hover:text-white transition">الأسئلة الشائعة</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="font-bold mb-4 text-accent">التواصل</p>
+        <ul class="space-y-3 text-sm text-white/50">
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            info@capital.com
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-accent fill-current shrink-0" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank" class="hover:text-white transition">واتساب: تحدث معنا</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/7 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/30">
+      <p>© 2024 Lebanon Capital. رحلتك نحو الاستقرار المالي تبدأ هنا.</p>
+      <p class="text-center">⚠️ تنويه: Lebanon Capital توفر خدمات استثمارية. استثمارك آمن وأموالك محمية بالكامل.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
+<script>
+// ── Dark Mode (default: OS preference) ──
+let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (localStorage.getItem('lc-dark') !== null) isDark = localStorage.getItem('lc-dark') === 'true';
+function applyDark() {
+  document.documentElement.classList.toggle('dark', isDark);
+  const ic = document.getElementById('dark-icon');
+  if (ic) ic.textContent = isDark ? '☀️' : '🌙';
+}
+function toggleDark() { isDark = !isDark; localStorage.setItem('lc-dark', isDark); applyDark(); }
+applyDark();
+
+// ── Mobile Menu ──
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  document.getElementById('mobile-nav').classList.toggle('open', menuOpen);
+}
+
+// ── FAQ Accordion ──
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-answer').classList.remove('open');
+  });
+  if (!isOpen) { item.classList.add('open'); answer.classList.add('open'); }
+}
+
+// ── Scroll Reveal ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
