@@ -50,220 +50,335 @@ tailwind.config = {
   .float1 { animation:float1 5s ease-in-out infinite; }
   .float2 { animation:float2 7s ease-in-out infinite; }
   section { scroll-margin-top:72px; }
-  /* Auth */
   .auth-tab.active { background:#8C2828; color:#fff; }
   .input-field { width:100%; px:4; py:3; border:1.5px solid #d5c8be; border-radius:12px; background:transparent; font-size:.95rem; padding:10px 14px; outline:none; transition:border-color .2s; }
   .input-field:focus { border-color:#8C2828; }
   .dark .input-field { border-color:#4a4035; color:#e8e4da; }
   .dark .input-field:focus { border-color:#b03535; }
-  /* Slide transition */
   @keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   .slide-in { animation:slideIn .35s ease forwards; }
-  /* Status badges */
   .badge-active { background:#dcfce7; color:#166534; }
   .badge-pending { background:#fef9c3; color:#854d0e; }
   .badge-suspended { background:#fee2e2; color:#991b1b; }
   .dark .badge-active { background:#14532d; color:#86efac; }
   .dark .badge-pending { background:#422006; color:#fde68a; }
   .dark .badge-suspended { background:#450a0a; color:#fca5a5; }
-  /* Admin table */
   .admin-table th { background:#f5f3ef; font-weight:700; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:#8C2828; }
   .dark .admin-table th { background:#2f2c22; }
   .admin-table td { border-bottom:1px solid #e8e4da; font-size:.88rem; }
   .dark .admin-table td { border-bottom:1px solid #3a3628; }
-  /* Modal */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; }
   .modal-box { background:#fff; border-radius:24px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
   .dark .modal-box { background:#2f2c22; }
+  .loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top:2px solid #fff; border-radius:50%; animation:spin .6s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 
 <body class="bg-[#f5f3ef] dark:bg-[#1e1b14] text-[#1a1613] dark:text-[#e8e4da] antialiased">
 
-<!-- ... existing page content ... -->
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-box slide-in p-8">
+    <div class="flex gap-2 bg-[#f5f3ef] dark:bg-[#1e1b14] p-1 rounded-xl mb-7">
+      <button id="tab-login"    onclick="switchTab('login')"    class="auth-tab active flex-1 py-2.5 rounded-lg font-bold text-sm transition">تسجيل الدخول</button>
+      <button id="tab-register" onclick="switchTab('register')" class="auth-tab flex-1 py-2.5 rounded-lg font-bold text-sm transition text-[#6a5a4a] dark:text-[#9a9283]">إنشاء حساب</button>
+    </div>
 
-<!-- SCRIPTS -->
-<script>
-const API_URL = 'http://localhost:5000/api';
-const WA = 'https://wa.me/message/OSOFPJLLHFAAH1';
+    <!-- Login Form -->
+    <form id="form-login" onsubmit="doLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني أو اسم المستخدم</label>
+        <input id="l-email" type="text" class="input-field" placeholder="example@email.com" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="l-pass" type="password" class="input-field" placeholder="••••••••" required>
+      </div>
+      <p id="login-err" class="text-red-600 text-sm hidden"></p>
+      <button type="submit" class="w-full bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition mt-2 flex items-center justify-center gap-2"><span id="login-spinner" class="loading-spinner hidden"></span>دخول</button>
+    </form>
 
-// existing scripts are loaded earlier in file; we append an override script below to make auth forgiving
-</script>
+    <!-- Register Form -->
+    <form id="form-register" onsubmit="doRegister(event)" class="space-y-4 hidden">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم الكامل</label>
+          <input id="r-name" type="text" class="input-field" placeholder="محمد علي" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="r-country" type="text" class="input-field" placeholder="لبنان" required>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="r-email" type="email" class="input-field" placeholder="example@email.com" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رقم الهاتف (واتساب)</label>
+        <input id="r-phone" type="tel" class="input-field" placeholder="+961 70 000000">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="r-pass" type="password" class="input-field" placeholder="8 أحرف على الأقل" required minlength="6">
+      </div>
+      <p id="register-err" class="text-red-600 text-sm hidden"></p>
+      <button type="submit" class="w-full bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition mt-2 flex items-center justify-center gap-2"><span id="register-spinner" class="loading-spinner hidden"></span>إنشاء الحساب</button>
+    </form>
 
-<!-- Patch script to prevent blank screen after login/register -->
-<script>
-(function(){
-  // Flexible API URL: use window.__API_URL__ if set, otherwise choose sane default
-  const API_URL_NEW = window.__API_URL__ || (function(){
-    try{
-      const loc = window.location;
-      if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') return 'http://localhost:5000/api';
-      return `${loc.protocol}//${loc.hostname}${loc.port?':'+loc.port:''}/api`;
-    } catch(e) { return 'http://localhost:5000/api'; }
-  })();
+    <button onclick="closeAuth()" class="mt-5 w-full text-sm text-[#9a8a7a] dark:text-[#6a6050] hover:text-accent transition">إلغاء والعودة للموقع</button>
+  </div>
+</div>
 
-  // Safe JSON parser for fetch responses
-  async function safeJson(res){
-    if (!res) return null;
-    const text = await res.text().catch(()=>null);
-    if (!text) return null;
-    try { return JSON.parse(text); } catch (err) { console.error('Invalid JSON from server:', err, 'response text:', text); return null; }
-  }
+<!-- EDIT USER MODAL (Admin) -->
+<div id="edit-modal" class="modal-overlay hidden">
+  <div class="modal-box p-8">
+    <h3 class="text-xl font-black mb-6">تعديل بيانات المستخدم</h3>
+    <form onsubmit="saveEditUser(event)" class="space-y-4">
+      <input type="hidden" id="edit-id">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم</label>
+          <input id="edit-name" class="input-field" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="edit-country" class="input-field">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="edit-email" type="email" class="input-field" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الهاتف</label>
+        <input id="edit-phone" class="input-field">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رأس المال ($)</label>
+          <input id="edit-capital" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الرصيد المتاح ($)</label>
+          <input id="edit-balance" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">حالة الحساب</label>
+        <select id="edit-status" class="input-field">
+          <option value="pending">قيد المراجعة</option>
+          <option value="active">نشط</option>
+          <option value="suspended">موقوف</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">ملاحظة (اختياري)</label>
+        <textarea id="edit-note" class="input-field resize-none" rows="2" placeholder="ملاحظة للأدمن..."></textarea>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-accent text-white font-bold py-3 rounded-xl hover:bg-accent-dk transition">حفظ</button>
+        <button type="button" onclick="closeEditModal()" class="flex-1 border-2 border-[#d5c8be] dark:border-[#4a4035] font-bold py-3 rounded-xl hover:border-accent transition">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  // expose for debugging
-  window.API_URL = API_URL_NEW;
-  window.safeJson = safeJson;
+<!-- ADD USER MODAL (Admin) -->
+<div id="add-modal" class="modal-overlay hidden">
+  <div class="modal-box p-8">
+    <h3 class="text-xl font-black mb-6">إضافة مستخدم جديد</h3>
+    <form onsubmit="saveAddUser(event)" class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم</label>
+          <input id="add-name" class="input-field" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="add-country" class="input-field" placeholder="لبنان">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="add-email" type="email" class="input-field" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الهاتف</label>
+        <input id="add-phone" class="input-field" placeholder="+961...">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="add-pass" type="password" class="input-field" required minlength="6">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رأس المال ($)</label>
+          <input id="add-capital" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الرصيد المتاح ($)</label>
+          <input id="add-balance" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">حالة الحساب</label>
+        <select id="add-status" class="input-field">
+          <option value="pending">قيد المراجعة</option>
+          <option value="active">نشط</option>
+        </select>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-accent text-white font-bold py-3 rounded-xl hover:bg-accent-dk transition">إضافة</button>
+        <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="flex-1 border-2 border-[#d5c8be] dark:border-[#4a4035] font-bold py-3 rounded-xl hover:border-accent transition">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  // Override doRegister
-  window.doRegister = async function(e){
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type=submit]');
-    const spinner = e.target.querySelector('.loading-spinner');
-    if (btn) btn.disabled = true;
-    if (spinner) spinner.classList.remove('hidden');
-    try{
-      const payload = {
-        name: document.getElementById('r-name').value.trim(),
-        email: document.getElementById('r-email').value.trim().toLowerCase(),
-        password: document.getElementById('r-pass').value,
-        country: document.getElementById('r-country').value.trim(),
-        phone: document.getElementById('r-phone').value.trim()
-      };
-      const res = await fetch(`${API_URL_NEW}/auth/register`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-      });
-      const data = await safeJson(res);
-      if (!data) {
-        const errEl = document.getElementById('register-err');
-        if (errEl) { errEl.textContent = 'استجابة غير صحيحة من الخادم'; errEl.classList.remove('hidden'); }
-        else alert('استجابة غير صحيحة من الخادم');
-        return;
-      }
-      if (data.success) {
-        if (data.token) localStorage.setItem('lc_token', data.token);
-        localStorage.setItem('lc_isAdmin', 'false');
-        closeAuth();
-        showPage('dashboard');
-        if (typeof loadDashboard === 'function') loadDashboard();
-      } else {
-        const errEl = document.getElementById('register-err');
-        if (errEl) { errEl.textContent = data.message || 'خطأ'; errEl.classList.remove('hidden'); }
-      }
-    } catch (err) {
-      console.error('Register override error:', err);
-      const errEl = document.getElementById('register-err');
-      if (errEl) { errEl.textContent = 'خطأ في الاتصال بالخادم'; errEl.classList.remove('hidden'); }
-    } finally {
-      if (btn) btn.disabled = false;
-      if (spinner) spinner.classList.add('hidden');
-    }
-  };
+<!-- USER DASHBOARD -->
+<div id="user-dashboard" class="hidden min-h-screen bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <!-- Nav -->
+  <header class="sticky top-0 z-40 bg-[#f5f3ef]/90 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+    <div class="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        </div>
+        <span class="font-bold text-lg">Lebanon <span class="text-accent">Capital</span></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg"><span id="dark-icon2">🌙</span></button>
+        <div class="hidden sm:flex items-center gap-2 text-sm font-semibold">
+          <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-black" id="dash-avatar">م</div>
+          <span id="dash-username" class="text-[#5a4a3a] dark:text-[#c8c0b0]">المستخدم</span>
+        </div>
+        <button onclick="doLogout()" class="flex items-center gap-1.5 text-sm font-semibold text-[#9a8a7a] hover:text-accent transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0[...]/></svg>
+          خروج
+        </button>
+      </div>
+    </div>
+  </header>
 
-  // Override doLogin
-  window.doLogin = async function(e){
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type=submit]');
-    const spinner = e.target.querySelector('.loading-spinner');
-    if (btn) btn.disabled = true;
-    if (spinner) spinner.classList.remove('hidden');
-    try{
-      const email = document.getElementById('l-email').value.trim().toLowerCase();
-      const password = document.getElementById('l-pass').value;
-      const isAdminLogin = email === 'admin' || email.endsWith('@admin');
-      const res = await fetch(`${API_URL_NEW}/auth/login`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: isAdminLogin ? 'admin' : email, password, isAdmin: isAdminLogin })
-      });
-      const data = await safeJson(res);
-      if (!data) {
-        const errEl = document.getElementById('login-err');
-        if (errEl) { errEl.textContent = 'استجابة غير صحيحة من الخادم'; errEl.classList.remove('hidden'); }
-        else alert('استجابة غير صحيحة من الخادم');
-        return;
-      }
-      if (data.success) {
-        if (data.token) localStorage.setItem('lc_token', data.token);
-        localStorage.setItem('lc_isAdmin', isAdminLogin ? 'true' : 'false');
-        closeAuth();
-        if (isAdminLogin) { showPage('admin'); if (typeof loadAdmin === 'function') loadAdmin(); }
-        else { showPage('dashboard'); if (typeof loadDashboard === 'function') loadDashboard(); }
-      } else {
-        const errEl = document.getElementById('login-err');
-        if (errEl) { errEl.textContent = data.message || 'خطأ'; errEl.classList.remove('hidden'); }
-      }
-    } catch (err) {
-      console.error('Login override error:', err);
-      const errEl = document.getElementById('login-err');
-      if (errEl) { errEl.textContent = 'خطأ في الاتصال بالخادم'; errEl.classList.remove('hidden'); }
-    } finally {
-      if (btn) btn.disabled = false;
-      if (spinner) spinner.classList.add('hidden');
-    }
-  };
+  <div class="max-w-5xl mx-auto px-5 py-10 space-y-8">
+    <!-- Welcome + Status -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black">أهلاً، <span id="dash-name" class="text-accent">المستخدم</span> 👋</h1>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mt-1">لوحة التحكم الخاصة بك</p>
+      </div>
+      <span id="dash-status-badge" class="badge-pending px-4 py-1.5 rounded-full text-sm font-bold">قيد المراجعة</span>
+    </div>
 
-  // Override loadDashboard to be resilient
-  window.loadDashboard = async function(){
-    try{
-      const token = localStorage.getItem('lc_token');
-      if (!token) { 
-        // fallback to client-side session (for older local-storage mode)
-        const sessRaw = sessionStorage.getItem('lc_session');
-        if (sessRaw) {
-          try{
-            const sess = JSON.parse(sessRaw);
-            if (sess?.userId && typeof window.loadDashboard === 'function') {
-              // if original client-side load exists, call it (some versions used different implementation)
-            }
-          } catch(e){}
-        }
-        doLogout();
-        return;
-      }
-      const res = await fetch(`${API_URL_NEW}/user/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
-      const data = await safeJson(res);
-      if (!data) {
-        console.warn('loadDashboard: invalid server response');
-        alert('تعذر الاتصال بخادم البيانات. سيتم إعادة التوجيه للصفحة العامة.');
-        doLogout();
-        return;
-      }
-      if (!data.success) { doLogout(); return; }
-      const user = data.user;
-      if (user) {
-        if (document.getElementById('dash-name')) document.getElementById('dash-name').textContent = user.name;
-        if (document.getElementById('dash-username')) document.getElementById('dash-username').textContent = user.name.split(' ')[0];
-        if (document.getElementById('dash-avatar')) document.getElementById('dash-avatar').textContent = user.name.charAt(0);
-        if (document.getElementById('dash-capital')) document.getElementById('dash-capital').textContent = Number(user.capital || 0).toLocaleString();
-        if (document.getElementById('dash-balance')) document.getElementById('dash-balance').textContent = Number(user.balance || 0).toLocaleString();
-        if (document.getElementById('dash-join')) document.getElementById('dash-join').textContent = new Date(user.createdAt).toLocaleDateString('ar-LB');
-        const badge = document.getElementById('dash-status-badge');
-        if (badge) {
-          const statusMap = { active: ['badge-active','نشط ✓'], pending: ['badge-pending','قيد المراجعة'], suspended: ['badge-suspended','موقوف'] };
-          const [cls,label] = statusMap[user.status] || statusMap.pending;
-          badge.className = `${cls} px-4 py-1.5 rounded-full text-sm font-bold`;
-          badge.textContent = label;
-        }
-        if (document.getElementById('pv-name')) document.getElementById('pv-name').textContent = user.name;
-        if (document.getElementById('pv-email')) document.getElementById('pv-email').textContent = user.email;
-        if (document.getElementById('pv-country')) document.getElementById('pv-country').textContent = user.country || '—';
-        if (document.getElementById('pv-phone')) document.getElementById('pv-phone').textContent = user.phone || '—';
-        if (document.getElementById('pe-name')) document.getElementById('pe-name').value = user.name;
-        if (document.getElementById('pe-country')) document.getElementById('pe-country').value = user.country || '';
-        if (document.getElementById('pe-phone')) document.getElementById('pe-phone').value = user.phone || '';
-        if (user.note){
-          const nb = document.getElementById('admin-note-box'); if (nb) nb.classList.remove('hidden');
-          const nt = document.getElementById('admin-note-text'); if (nt) nt.textContent = user.note;
-        }
-      }
-    } catch (err) {
-      console.error('loadDashboard override error:', err);
-      alert('حدث خطأ أثناء تحميل لوحة التحكم. يرجى المحاولة لاحقاً.');
-      doLogout();
-    }
-  };
+    <!-- Balance Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm col-span-2 md:col-span-1">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">رأس المال</p>
+        <p class="text-3xl font-black text-accent">$<span id="dash-capital">0</span></p>
+        <p class="text-xs text-[#9a8a7a] mt-1">المبلغ المُودَع</p>
+      </div>
 
-  console.log('Auth guard overrides applied; API_URL=', API_URL_NEW);
-})();
-</script>
-</body>
-</html>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">الرصيد المتاح</p>
+        <p class="text-3xl font-black text-green-600">$<span id="dash-balance">0</span></p>
+        <p class="text-xs text-[#9a8a7a] mt-1">جاهز للسحب</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">تاريخ الانضمام</p>
+        <p class="text-xl font-black" id="dash-join">—</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">عضو منذ</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <h3 class="font-black text-xl mb-2">إيداع</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mb-5 leading-relaxed">لإيداع مبلغ جديد أو زيادة رأس مالك، تواصل معنا مباشرةً عبر واتساب.</p>
+        <a id="deposit-btn" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition">
+          تواصل معنا للإيداع
+        </a>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1"/></svg>
+        </div>
+        <h3 class="font-black text-xl mb-2">سحب الأرباح</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mb-5 leading-relaxed">لطلب سحب رصيدك المتاح، تواصل معنا وسيتم التحويل خلال 24 ساعة.</p>
+        <a id="withdraw-btn" href="#" target="_blank" class="flex items-center justify-center gap-2 border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold py-3 rounded-xl transition">
+          طلب السحب عبر واتساب
+        </a>
+      </div>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-black text-xl">معلومات الحساب</h3>
+        <button onclick="toggleEditProfile()" id="edit-profile-btn" class="text-sm font-semibold text-accent hover:underline">تعديل</button>
+      </div>
+      <!-- View mode -->
+      <div id="profile-view" class="grid sm:grid-cols-2 gap-5">
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">الاسم الكامل</p><p class="font-bold" id="pv-name">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">البريد الإلكتروني</p><p class="font-bold" id="pv-email">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">الدولة</p><p class="font-bold" id="pv-country">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">رقم الهاتف</p><p class="font-bold" id="pv-phone">—</p></div>
+      </div>
+      <!-- Edit mode -->
+      <form id="profile-edit" class="hidden space-y-4" onsubmit="saveProfile(event)">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-semibold mb-1">الاسم</label><input id="pe-name" class="input-field" required></div>
+          <div><label class="block text-sm font-semibold mb-1">الدولة</label><input id="pe-country" class="input-field"></div>
+        </div>
+        <div><label class="block text-sm font-semibold mb-1">رقم الهاتف</label><input id="pe-phone" class="input-field"></div>
+        <div class="flex gap-3">
+          <button type="submit" class="bg-accent text-white font-bold px-6 py-2.5 rounded-xl hover:bg-accent-dk transition">حفظ</button>
+          <button type="button" onclick="toggleEditProfile()" class="border border-[#d5c8be] dark:border-[#4a4035] font-bold px-6 py-2.5 rounded-xl hover:border-accent transition">إلغاء</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Note from admin -->
+    <div id="admin-note-box" class="hidden bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40 rounded-2xl p-5">
+      <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 uppercase mb-1">ملاحظة من الإدارة</p>
+      <p id="admin-note-text" class="text-sm text-yellow-800 dark:text-yellow-300"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" class="hidden min-h-screen bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <!-- Nav -->
+  <header class="sticky top-0 z-40 bg-[#f5f3ef]/90 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        </div>
+        <span class="font-bold text-lg">لوحة <span class="text-accent">الإدارة</span></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg"><span id="dark-icon3">🌙</span></button>
+        <span class="text-sm font-bold text-accent hidden sm:block">أدمن</span>
+        <button onclick="doLogout()" class="flex items-center gap-1.5 text-sm font-semibold text-[#9a8a7a] hover:text-accent transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0[...]/></svg>
+          خروج
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-5 py-10 space-y-8">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black">إدارة المستخدمين</h1>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mt-1">عرض وتعديل جميع الحسابات</p>
+      </div>
+      <button onclick="document.getElementById('add-modal').classList.remove('hidden')" class="flex items-center gap-2 bg-accent text-white font-bold px-5 py-2.5 rounded-xl btn-glow hover:bg-acce[...]
