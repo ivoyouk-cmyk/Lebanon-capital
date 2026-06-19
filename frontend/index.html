@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lebanon Capital — الاستثمار الذكي</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+      colors: {
+        accent:       '#8C2828',
+        'accent-lit': '#b03535',
+        'accent-dk':  '#6b1e1e',
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { font-family: 'Tajawal', sans-serif; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .ticker-inner { animation: ticker 35s linear infinite; }
+  .ticker-wrap:hover .ticker-inner { animation-play-state: paused; }
+  .fade-up { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+  .fade-up.visible { opacity:1; transform:translateY(0); }
+  .grad-text { background:linear-gradient(135deg,#8C2828,#c04040,#e06060); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .btn-glow { box-shadow:0 0 22px rgba(140,40,40,.40); transition:box-shadow .3s,transform .2s; }
+  .btn-glow:hover { box-shadow:0 0 42px rgba(140,40,40,.60); transform:translateY(-2px); }
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:#8C2828; border-radius:99px; }
+  .nav-link { position:relative; }
+  .nav-link::after { content:''; position:absolute; bottom:-3px; left:0; right:0; height:2px; background:#8C2828; border-radius:99px; transform:scaleX(0); transition:transform .25s ease; }
+  .nav-link:hover::after { transform:scaleX(1); }
+  .faq-answer { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+  .faq-answer.open { max-height:400px; }
+  .faq-chevron { transition:transform .3s; }
+  .faq-item.open .faq-chevron { transform:rotate(180deg); }
+  #mobile-nav { max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  #mobile-nav.open { max-height:500px; }
+  @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+  @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .float1 { animation:float1 5s ease-in-out infinite; }
+  .float2 { animation:float2 7s ease-in-out infinite; }
+  section { scroll-margin-top:72px; }
+  .auth-tab.active { background:#8C2828; color:#fff; }
+  .input-field { width:100%; px:4; py:3; border:1.5px solid #d5c8be; border-radius:12px; background:transparent; font-size:.95rem; padding:10px 14px; outline:none; transition:border-color .2s; }
+  .input-field:focus { border-color:#8C2828; }
+  .dark .input-field { border-color:#4a4035; color:#e8e4da; }
+  .dark .input-field:focus { border-color:#b03535; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .slide-in { animation:slideIn .35s ease forwards; }
+  .badge-active { background:#dcfce7; color:#166534; }
+  .badge-pending { background:#fef9c3; color:#854d0e; }
+  .badge-suspended { background:#fee2e2; color:#991b1b; }
+  .dark .badge-active { background:#14532d; color:#86efac; }
+  .dark .badge-pending { background:#422006; color:#fde68a; }
+  .dark .badge-suspended { background:#450a0a; color:#fca5a5; }
+  .admin-table th { background:#f5f3ef; font-weight:700; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:#8C2828; }
+  .dark .admin-table th { background:#2f2c22; }
+  .admin-table td { border-bottom:1px solid #e8e4da; font-size:.88rem; }
+  .dark .admin-table td { border-bottom:1px solid #3a3628; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; }
+  .modal-box { background:#fff; border-radius:24px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+  .dark .modal-box { background:#2f2c22; }
+  .loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top:2px solid #fff; border-radius:50%; animation:spin .6s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+
+<body class="bg-[#f5f3ef] dark:bg-[#1e1b14] text-[#1a1613] dark:text-[#e8e4da] antialiased">
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-box slide-in p-8">
+    <div class="flex gap-2 bg-[#f5f3ef] dark:bg-[#1e1b14] p-1 rounded-xl mb-7">
+      <button id="tab-login"    onclick="switchTab('login')"    class="auth-tab active flex-1 py-2.5 rounded-lg font-bold text-sm transition">تسجيل الدخول</button>
+      <button id="tab-register" onclick="switchTab('register')" class="auth-tab flex-1 py-2.5 rounded-lg font-bold text-sm transition text-[#6a5a4a] dark:text-[#9a9283]">إنشاء حساب</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="form-login" onsubmit="doLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني أو اسم المستخدم</label>
+        <input id="l-email" type="text" class="input-field" placeholder="example@email.com" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="l-pass" type="password" class="input-field" placeholder="••••••••" required>
+      </div>
+      <p id="login-err" class="text-red-600 text-sm hidden"></p>
+      <button type="submit" class="w-full bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition mt-2 flex items-center justify-center gap-2"><span id="login-spinner" class="loading-spinner hidden"></span>دخول</button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="form-register" onsubmit="doRegister(event)" class="space-y-4 hidden">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم الكامل</label>
+          <input id="r-name" type="text" class="input-field" placeholder="محمد علي" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="r-country" type="text" class="input-field" placeholder="لبنان" required>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="r-email" type="email" class="input-field" placeholder="example@email.com" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رقم الهاتف (واتساب)</label>
+        <input id="r-phone" type="tel" class="input-field" placeholder="+961 70 000000">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="r-pass" type="password" class="input-field" placeholder="8 أحرف على الأقل" required minlength="6">
+      </div>
+      <p id="register-err" class="text-red-600 text-sm hidden"></p>
+      <button type="submit" class="w-full bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition mt-2 flex items-center justify-center gap-2"><span id="register-spinner" class="loading-spinner hidden"></span>إنشاء الحساب</button>
+    </form>
+
+    <button onclick="closeAuth()" class="mt-5 w-full text-sm text-[#9a8a7a] dark:text-[#6a6050] hover:text-accent transition">إلغاء والعودة للموقع</button>
+  </div>
+</div>
+
+<!-- EDIT USER MODAL (Admin) -->
+<div id="edit-modal" class="modal-overlay hidden">
+  <div class="modal-box p-8">
+    <h3 class="text-xl font-black mb-6">تعديل بيانات المستخدم</h3>
+    <form onsubmit="saveEditUser(event)" class="space-y-4">
+      <input type="hidden" id="edit-id">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم</label>
+          <input id="edit-name" class="input-field" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="edit-country" class="input-field">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="edit-email" type="email" class="input-field" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الهاتف</label>
+        <input id="edit-phone" class="input-field">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رأس المال ($)</label>
+          <input id="edit-capital" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الرصيد المتاح ($)</label>
+          <input id="edit-balance" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">حالة الحساب</label>
+        <select id="edit-status" class="input-field">
+          <option value="pending">قيد المراجعة</option>
+          <option value="active">نشط</option>
+          <option value="suspended">موقوف</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">ملاحظة (اختياري)</label>
+        <textarea id="edit-note" class="input-field resize-none" rows="2" placeholder="ملاحظة للأدمن..."></textarea>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-accent text-white font-bold py-3 rounded-xl hover:bg-accent-dk transition">حفظ</button>
+        <button type="button" onclick="closeEditModal()" class="flex-1 border-2 border-[#d5c8be] dark:border-[#4a4035] font-bold py-3 rounded-xl hover:border-accent transition">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ADD USER MODAL (Admin) -->
+<div id="add-modal" class="modal-overlay hidden">
+  <div class="modal-box p-8">
+    <h3 class="text-xl font-black mb-6">إضافة مستخدم جديد</h3>
+    <form onsubmit="saveAddUser(event)" class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الاسم</label>
+          <input id="add-name" class="input-field" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الدولة</label>
+          <input id="add-country" class="input-field" placeholder="لبنان">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">البريد الإلكتروني</label>
+        <input id="add-email" type="email" class="input-field" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الهاتف</label>
+        <input id="add-phone" class="input-field" placeholder="+961...">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">كلمة المرور</label>
+        <input id="add-pass" type="password" class="input-field" required minlength="6">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">رأس المال ($)</label>
+          <input id="add-capital" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">الرصيد المتاح ($)</label>
+          <input id="add-balance" type="number" min="0" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5 text-[#5a4a3a] dark:text-[#c8c0b0]">حالة الحساب</label>
+        <select id="add-status" class="input-field">
+          <option value="pending">قيد المراجعة</option>
+          <option value="active">نشط</option>
+        </select>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-accent text-white font-bold py-3 rounded-xl hover:bg-accent-dk transition">إضافة</button>
+        <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="flex-1 border-2 border-[#d5c8be] dark:border-[#4a4035] font-bold py-3 rounded-xl hover:border-accent transition">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- USER DASHBOARD -->
+<div id="user-dashboard" class="hidden min-h-screen bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <!-- Nav -->
+  <header class="sticky top-0 z-40 bg-[#f5f3ef]/90 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+    <div class="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        </div>
+        <span class="font-bold text-lg">Lebanon <span class="text-accent">Capital</span></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg"><span id="dark-icon2">🌙</span></button>
+        <div class="hidden sm:flex items-center gap-2 text-sm font-semibold">
+          <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-black" id="dash-avatar">م</div>
+          <span id="dash-username" class="text-[#5a4a3a] dark:text-[#c8c0b0]">المستخدم</span>
+        </div>
+        <button onclick="doLogout()" class="flex items-center gap-1.5 text-sm font-semibold text-[#9a8a7a] hover:text-accent transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          خروج
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto px-5 py-10 space-y-8">
+    <!-- Welcome + Status -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black">أهلاً، <span id="dash-name" class="text-accent">المستخدم</span> 👋</h1>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mt-1">لوحة التحكم الخاصة بك</p>
+      </div>
+      <span id="dash-status-badge" class="badge-pending px-4 py-1.5 rounded-full text-sm font-bold">قيد المراجعة</span>
+    </div>
+
+    <!-- Balance Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm col-span-2 md:col-span-1">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">رأس المال</p>
+        <p class="text-3xl font-black text-accent">$<span id="dash-capital">0</span></p>
+        <p class="text-xs text-[#9a8a7a] mt-1">المبلغ المُودَع</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">الرصيد المتاح</p>
+        <p class="text-3xl font-black text-green-600">$<span id="dash-balance">0</span></p>
+        <p class="text-xs text-[#9a8a7a] mt-1">جاهز للسحب</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-sm">
+        <p class="text-xs font-bold text-[#9a8a7a] uppercase tracking-wider mb-3">تاريخ الانضمام</p>
+        <p class="text-xl font-black" id="dash-join">—</p>
+        <p class="text-xs text-[#9a8a7a] mt-1">عضو منذ</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <h3 class="font-black text-xl mb-2">إيداع</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mb-5 leading-relaxed">لإيداع مبلغ جديد أو زيادة رأس مالك، تواصل معنا مباشرةً عبر واتساب.</p>
+        <a id="deposit-btn" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-dk text-white font-bold py-3 rounded-xl btn-glow transition">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.6.062-.252-.16-.952-.313-1.753-.6-1.527-.6-2.835-1.987-3.273-3.992-.15-.744-.092-.992.206-1.512.246-.42.574-.99.88-1.496.19-.316.21-.497.06-.747-.14-.23-.42-.574-.646-.762-.226-.187-.453-.225-.708-.075l-2.05 1.231c-.39.235-.826.88-.93 1.43-.227 1.215.056 2.806 1.254 4.09 1.36 1.51 3.58 2.687 5.9 3.038 1.018.158 1.996.044 2.583-.383.294-.213.785-1.084.785-1.442 0-.358.028-.36.337-.01.254.286.8.899 1.21 1.36l.75.823c.173.19.442.504.598.698.168.212.346.274.54.206.19-.066.382-.26.427-.432l1.103-4.764c.087-.375.07-.76-.045-1.124zm-6.97-7.005c.17 0 .309-.138.309-.309V3.509c0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309zm0 11.637c-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309.17 0 .309-.138.309-.309v-3.159c0-.171-.139-.309-.309-.309zm0-14.946c.17 0 .309-.139.309-.309.0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309 0 .17.138.309.309.309zm0 18.255c-.171 0-.309.138-.309.309 0 .171.138.309.309.309.17 0 .309-.138.309-.309 0-.171-.139-.309-.309-.309z"/></svg>
+          تواصل معنا للإيداع
+        </a>
+      </div>
+
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+        <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </div>
+        <h3 class="font-black text-xl mb-2">سحب الأرباح</h3>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mb-5 leading-relaxed">لطلب سحب رصيدك المتاح، تواصل معنا وسيتم التحويل خلال 24 ساعة.</p>
+        <a id="withdraw-btn" href="#" target="_blank" class="flex items-center justify-center gap-2 border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold py-3 rounded-xl transition">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.6.062-.252-.16-.952-.313-1.753-.6-1.527-.6-2.835-1.987-3.273-3.992-.15-.744-.092-.992.206-1.512.246-.42.574-.99.88-1.496.19-.316.21-.497.06-.747-.14-.23-.42-.574-.646-.762-.226-.187-.453-.225-.708-.075l-2.05 1.231c-.39.235-.826.88-.93 1.43-.227 1.215.056 2.806 1.254 4.09 1.36 1.51 3.58 2.687 5.9 3.038 1.018.158 1.996.044 2.583-.383.294-.213.785-1.084.785-1.442 0-.358.028-.36.337-.01.254.286.8.899 1.21 1.36l.75.823c.173.19.442.504.598.698.168.212.346.274.54.206.19-.066.382-.26.427-.432l1.103-4.764c.087-.375.07-.76-.045-1.124zm-6.97-7.005c.17 0 .309-.138.309-.309V3.509c0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309zm0 11.637c-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309.17 0 .309-.138.309-.309v-3.159c0-.171-.139-.309-.309-.309zm0-14.946c.17 0 .309-.139.309-.309.0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309 0 .17.138.309.309.309zm0 18.255c-.171 0-.309.138-.309.309 0 .171.138.309.309.309.17 0 .309-.138.309-.309 0-.171-.139-.309-.309-.309z"/></svg>
+          طلب السحب عبر واتساب
+        </a>
+      </div>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-7 border border-black/5 dark:border-white/5 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-black text-xl">معلومات الحساب</h3>
+        <button onclick="toggleEditProfile()" id="edit-profile-btn" class="text-sm font-semibold text-accent hover:underline">تعديل</button>
+      </div>
+      <!-- View mode -->
+      <div id="profile-view" class="grid sm:grid-cols-2 gap-5">
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">الاسم الكامل</p><p class="font-bold" id="pv-name">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">البريد الإلكتروني</p><p class="font-bold" id="pv-email">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">الدولة</p><p class="font-bold" id="pv-country">—</p></div>
+        <div><p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-1">رقم الهاتف</p><p class="font-bold" id="pv-phone">—</p></div>
+      </div>
+      <!-- Edit mode -->
+      <form id="profile-edit" class="hidden space-y-4" onsubmit="saveProfile(event)">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-semibold mb-1">الاسم</label><input id="pe-name" class="input-field" required></div>
+          <div><label class="block text-sm font-semibold mb-1">الدولة</label><input id="pe-country" class="input-field"></div>
+        </div>
+        <div><label class="block text-sm font-semibold mb-1">رقم الهاتف</label><input id="pe-phone" class="input-field"></div>
+        <div class="flex gap-3">
+          <button type="submit" class="bg-accent text-white font-bold px-6 py-2.5 rounded-xl hover:bg-accent-dk transition">حفظ</button>
+          <button type="button" onclick="toggleEditProfile()" class="border border-[#d5c8be] dark:border-[#4a4035] font-bold px-6 py-2.5 rounded-xl hover:border-accent transition">إلغاء</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Note from admin -->
+    <div id="admin-note-box" class="hidden bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40 rounded-2xl p-5">
+      <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 uppercase mb-1">ملاحظة من الإدارة</p>
+      <p id="admin-note-text" class="text-sm text-yellow-800 dark:text-yellow-300"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" class="hidden min-h-screen bg-[#f5f3ef] dark:bg-[#1e1b14]">
+  <!-- Nav -->
+  <header class="sticky top-0 z-40 bg-[#f5f3ef]/90 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        </div>
+        <span class="font-bold text-lg">لوحة <span class="text-accent">الإدارة</span></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg"><span id="dark-icon3">🌙</span></button>
+        <span class="text-sm font-bold text-accent hidden sm:block">أدمن</span>
+        <button onclick="doLogout()" class="flex items-center gap-1.5 text-sm font-semibold text-[#9a8a7a] hover:text-accent transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          خروج
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-5 py-10 space-y-8">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black">إدارة المستخدمين</h1>
+        <p class="text-[#6a5a4a] dark:text-[#9a9283] text-sm mt-1">عرض وتعديل جميع الحسابات</p>
+      </div>
+      <button onclick="document.getElementById('add-modal').classList.remove('hidden')" class="flex items-center gap-2 bg-accent text-white font-bold px-5 py-2.5 rounded-xl btn-glow hover:bg-accent-dk transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        إضافة مستخدم
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 border border-black/5 dark:border-white/5">
+        <p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-2">إجمالي الحسابات</p>
+        <p class="text-3xl font-black text-accent" id="stat-total">0</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 border border-black/5 dark:border-white/5">
+        <p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-2">حسابات نشطة</p>
+        <p class="text-3xl font-black text-green-600" id="stat-active">0</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 border border-black/5 dark:border-white/5">
+        <p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-2">قيد المراجعة</p>
+        <p class="text-3xl font-black text-yellow-600" id="stat-pending">0</p>
+      </div>
+      <div class="bg-white dark:bg-[#2f2c22] rounded-2xl p-5 border border-black/5 dark:border-white/5">
+        <p class="text-xs text-[#9a8a7a] font-semibold uppercase mb-2">إجمالي رأس المال</p>
+        <p class="text-2xl font-black" id="stat-capital">$0</p>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-black/5 dark:border-white/5">
+        <input oninput="filterUsers(this.value)" type="text" placeholder="ابحث بالاسم أو البريد أو الدولة..." class="input-field">
+      </div>
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="admin-table w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-right">#</th>
+              <th class="px-4 py-3 text-right">الاسم</th>
+              <th class="px-4 py-3 text-right hidden md:table-cell">البريد الإلكتروني</th>
+              <th class="px-4 py-3 text-right hidden sm:table-cell">الدولة</th>
+              <th class="px-4 py-3 text-right">رأس المال</th>
+              <th class="px-4 py-3 text-right">الرصيد</th>
+              <th class="px-4 py-3 text-right">الحالة</th>
+              <th class="px-4 py-3 text-right">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+        <div id="no-users" class="hidden py-16 text-center text-[#9a8a7a]">
+          <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20h12a6 6 0 006-6V4a6 6 0 00-6-6H6a6 6 0 00-6 6v10a6 6 0 006 6z"/></svg>
+          <p class="font-semibold">لا يوجد مستخدمون</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLIC SITE -->
+<div id="public-site">
+  <!-- NAVBAR -->
+  <header class="fixed top-0 inset-x-0 z-50">
+    <div class="bg-[#f5f3ef]/85 dark:bg-[#1e1b14]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/5">
+      <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+        <a href="#hero" class="flex items-center gap-2.5 shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          </div>
+          <span class="font-bold text-lg">Lebanon <span class="text-accent">Capital</span></span>
+        </a>
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-medium">
+          <a href="#hero" class="nav-link hover:text-accent transition-colors">الرئيسية</a>
+          <a href="#plans" class="nav-link hover:text-accent transition-colors">الخطط</a>
+          <a href="#faq" class="nav-link hover:text-accent transition-colors">الأسئلة</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/6 dark:hover:bg-white/10 transition text-lg"><span id="dark-icon">🌙</span></button>
+          <button onclick="openAuth('login')" class="flex items-center gap-1.5 text-sm font-bold border-2 border-accent text-accent hover:bg-accent hover:text-white px-4 py-1.5 rounded-xl transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-10a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            دخول
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="relative min-h-[90vh] flex items-center overflow-hidden bg-[#f5f3ef] dark:bg-[#1e1b14] pt-20">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-10 right-[10%] w-[500px] h-[500px] bg-accent/6 rounded-full blur-3xl float1"></div>
+      <div class="absolute bottom-0 left-[5%] w-[350px] h-[350px] bg-[#c04040]/5 rounded-full blur-3xl float2"></div>
+    </div>
+    <div class="max-w-6xl mx-auto px-5 py-20 w-full relative z-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="space-y-7 fade-up">
+          <div class="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-semibold">
+            <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+            نظام ذكاء اصطناعي يعمل 24/7
+          </div>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+            ابدأ من <span class="grad-text">250$</span> وابني رحلتك نحو <span class="grad-text">الاستقرار المالي</span>
+          </h1>
+          <p class="text-lg text-[#5a4f44] dark:text-[#9a9283] leading-relaxed max-w-lg">استثمر بذكاء مع نظام آلي متطور يعمل على مدار الساعة</p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="openAuth('register')" class="flex items-center gap-2 bg-accent hover:bg-accent-dk text-white font-bold px-7 py-3.5 rounded-2xl btn-glow transition">
+              إنشاء حساب الآن
+            </button>
+            <a href="#plans" class="flex items-center gap-2 border-2 border-accent text-accent hover:bg-accent/8 font-bold px-7 py-3.5 rounded-2xl transition">اعرف أكثر</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section id="plans" class="py-24 px-5 bg-white dark:bg-[#252219]">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16 fade-up">
+        <span class="text-accent text-sm font-bold uppercase tracking-widest">الخطط</span>
+        <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">اختر خطتك المناسبة</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-[#f5f3ef] dark:bg-[#2f2c22] rounded-3xl p-8 border-2 border-black/5 dark:border-white/5 hover:border-accent/35 transition-colors fade-up">
+          <div class="mb-6">
+            <p class="text-accent text-xs font-bold uppercase tracking-wider mb-2">للمبتدئين</p>
+            <h3 class="text-2xl font-black mb-1">الاستقرار الإضافي</h3>
+          </div>
+          <div class="flex items-end gap-2 mb-6">
+            <span class="text-4xl font-black text-accent">$250</span>
+            <span class="text-[#9a8a7a] mb-1">استثمار أولي</span>
+          </div>
+          <button onclick="openAuth('register')" class="w-full flex items-center justify-center border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold py-3.5 rounded-2xl transition-all">ابدأ الآن</button>
+        </div>
+        <div class="relative bg-accent rounded-3xl p-8 shadow-2xl shadow-accent/25 fade-up" style="transition-delay:.1s">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1.5 rounded-full whitespace-nowrap">⭐ الأكثر شعبية</div>
+          <div class="mb-6">
+            <p class="text-white/60 text-xs font-bold uppercase tracking-wider mb-2">للاستقرار الكامل</p>
+            <h3 class="text-2xl font-black text-white mb-1">الاستقرار الشامل</h3>
+          </div>
+          <div class="flex items-end gap-2 mb-6">
+            <span class="text-4xl font-black text-white">$5,000</span>
+            <span class="text-white/60 mb-1">استثمار أولي</span>
+          </div>
+          <button onclick="openAuth('register')" class="w-full flex items-center justify-center bg-white text-accent hover:bg-[#f5f0ec] font-bold py-3.5 rounded-2xl transition-all">ابدأ رحلتك</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-24 px-5 bg-[#f5f3ef] dark:bg-[#1e1b14]">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-16 fade-up">
+        <span class="text-accent text-sm font-bold uppercase tracking-widest">الأسئلة الشائعة</span>
+        <h2 class="text-3xl md:text-4xl font-black mt-2 mb-4">أسئلة شائعة</h2>
+      </div>
+      <div class="space-y-3 fade-up">
+        <div class="faq-item bg-white dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-5 hover:bg-accent/5 transition font-semibold">
+            <span>كيف أبدأ الاستثمار؟</span>
+            <span class="faq-chevron">▼</span>
+          </button>
+          <div class="faq-answer px-5 pb-5 text-[#6a5a4a] dark:text-[#9a9283]">قم بتسجيل حساب جديد، اختر الخطة المناسبة، ثم قم بالإيداع لبدء الاستثمار.</div>
+        </div>
+        <div class="faq-item bg-white dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-5 hover:bg-accent/5 transition font-semibold">
+            <span>ما هي طريقة السحب؟</span>
+            <span class="faq-chevron">▼</span>
+          </button>
+          <div class="faq-answer px-5 pb-5 text-[#6a5a4a] dark:text-[#9a9283]">يمكنك السحب في أي وقت عبر لوحة التحكم، والتحويل يتم خلال 24 ساعة.</div>
+        </div>
+        <div class="faq-item bg-white dark:bg-[#2f2c22] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-5 hover:bg-accent/5 transition font-semibold">
+            <span>هل النظام آمن؟</span>
+            <span class="faq-chevron">▼</span>
+          </button>
+          <div class="faq-answer px-5 pb-5 text-[#6a5a4a] dark:text-[#9a9283]">نعم، نستخدم أحدث تقنيات التشفير لحماية بياناتك وأموالك.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#160f0a] text-white py-16 px-5">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-10 mb-12">
+        <div class="space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center">
+              <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </div>
+            <span class="font-bold text-lg">Lebanon Capital</span>
+          </div>
+          <p class="text-white/45 text-sm leading-relaxed max-w-xs">منصتك الموثوقة للاستثمار الذكي باستخدام أحدث تقنيات الذكاء الاصطناعي.</p>
+        </div>
+        <div>
+          <p class="font-bold mb-4 text-accent">الروابط</p>
+          <ul class="space-y-2.5 text-sm text-white/50">
+            <li><a href="#hero" class="hover:text-white transition">الرئيسية</a></li>
+            <li><a href="#plans" class="hover:text-white transition">الخطط</a></li>
+            <li><button onclick="openAuth('login')" class="hover:text-white transition">تسجيل الدخول</button></li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-bold mb-4 text-accent">التواصل</p>
+          <ul class="space-y-3 text-sm text-white/50">
+            <li><a href="https://wa.me/message/OSOFPJLLHFAAH1" target="_blank" class="hover:text-white transition flex items-center gap-2">
+              <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.6.062-.252-.16-.952-.313-1.753-.6-1.527-.6-2.835-1.987-3.273-3.992-.15-.744-.092-.992.206-1.512.246-.42.574-.99.88-1.496.19-.316.21-.497.06-.747-.14-.23-.42-.574-.646-.762-.226-.187-.453-.225-.708-.075l-2.05 1.231c-.39.235-.826.88-.93 1.43-.227 1.215.056 2.806 1.254 4.09 1.36 1.51 3.58 2.687 5.9 3.038 1.018.158 1.996.044 2.583-.383.294-.213.785-1.084.785-1.442 0-.358.028-.36.337-.01.254.286.8.899 1.21 1.36l.75.823c.173.19.442.504.598.698.168.212.346.274.54.206.19-.066.382-.26.427-.432l1.103-4.764c.087-.375.07-.76-.045-1.124zm-6.97-7.005c.17 0 .309-.138.309-.309V3.509c0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309zm0 11.637c-.171 0-.309.138-.309.309v3.159c0 .171.138.309.309.309.17 0 .309-.138.309-.309v-3.159c0-.171-.139-.309-.309-.309zm0-14.946c.17 0 .309-.139.309-.309.0-.171-.138-.309-.309-.309-.171 0-.309.138-.309.309 0 .17.138.309.309.309zm0 18.255c-.171 0-.309.138-.309.309 0 .171.138.309.309.309.17 0 .309-.138.309-.309 0-.171-.139-.309-.309-.309z"/></svg>
+              واتساب
+            </a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/7 pt-8 text-center text-xs text-white/30">
+        <p>© 2024 Lebanon Capital. رحلتك نحو الاستقرار المالي تبدأ هنا.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+const API_URL = 'http://localhost:5000/api';
+const WA = 'https://wa.me/message/OSOFPJLLHFAAH1';
+
+// ── Dark Mode ──
+let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (localStorage.getItem('lc-dark') !== null) isDark = localStorage.getItem('lc-dark') === 'true';
+function applyDark() {
+  document.documentElement.classList.toggle('dark', isDark);
+  ['dark-icon','dark-icon2','dark-icon3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = isDark ? '☀️' : '🌙';
+  });
+}
+function toggleDark() { isDark = !isDark; localStorage.setItem('lc-dark', isDark); applyDark(); }
+applyDark();
+
+// ── Session Management ──
+function getToken() { return localStorage.getItem('lc_token'); }
+function setToken(token) { localStorage.setItem('lc_token', token); }
+function clearToken() { localStorage.removeItem('lc_token'); }
+function isAdmin() { return localStorage.getItem('lc_isAdmin') === 'true'; }
+
+// ── Page switching ──
+function showPage(page) {
+  document.getElementById('public-site').style.display    = (page === 'public')    ? '' : 'none';
+  document.getElementById('user-dashboard').style.display = (page === 'dashboard') ? '' : 'none';
+  document.getElementById('admin-panel').style.display    = (page === 'admin')     ? '' : 'none';
+  window.scrollTo(0, 0);
+}
+
+// ── Init ──
+function initApp() {
+  const token = getToken();
+  if (token) {
+    if (isAdmin()) { showPage('admin'); loadAdmin(); }
+    else { showPage('dashboard'); loadDashboard(); }
+  } else {
+    showPage('public');
+  }
+}
+
+// ── Auth modal ──
+function openAuth(tab) {
+  document.getElementById('auth-modal').classList.remove('hidden');
+  switchTab(tab || 'login');
+  document.getElementById('login-err').classList.add('hidden');
+  document.getElementById('register-err').classList.add('hidden');
+}
+function closeAuth() { document.getElementById('auth-modal').classList.add('hidden'); }
+function switchTab(t) {
+  document.getElementById('form-login').classList.toggle('hidden', t !== 'login');
+  document.getElementById('form-register').classList.toggle('hidden', t !== 'register');
+  document.getElementById('tab-login').classList.toggle('active', t === 'login');
+  document.getElementById('tab-register').classList.toggle('active', t === 'register');
+}
+
+// ── Register ──
+async function doRegister(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  const spinner = e.target.querySelector('.loading-spinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+  
+  try {
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('r-name').value.trim(),
+        email: document.getElementById('r-email').value.trim().toLowerCase(),
+        password: document.getElementById('r-pass').value,
+        country: document.getElementById('r-country').value.trim(),
+        phone: document.getElementById('r-phone').value.trim()
+      })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      setToken(data.token);
+      localStorage.setItem('lc_isAdmin', 'false');
+      closeAuth();
+      showPage('dashboard');
+      loadDashboard();
+    } else {
+      document.getElementById('register-err').textContent = data.message;
+      document.getElementById('register-err').classList.remove('hidden');
+    }
+  } catch (err) {
+    console.error('Register error:', err);
+    document.getElementById('register-err').textContent = 'خطأ في الاتصال بالخادم';
+    document.getElementById('register-err').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+}
+
+// ── Login ──
+async function doLogin(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  const spinner = e.target.querySelector('.loading-spinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+  
+  try {
+    const email = document.getElementById('l-email').value.trim().toLowerCase();
+    const password = document.getElementById('l-pass').value;
+    const isAdminLogin = email === 'admin' || email.endsWith('@admin');
+    
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: isAdminLogin ? 'admin' : email,
+        password,
+        isAdmin: isAdminLogin
+      })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      setToken(data.token);
+      localStorage.setItem('lc_isAdmin', isAdminLogin ? 'true' : 'false');
+      closeAuth();
+      if (isAdminLogin) {
+        showPage('admin');
+        loadAdmin();
+      } else {
+        showPage('dashboard');
+        loadDashboard();
+      }
+    } else {
+      document.getElementById('login-err').textContent = data.message;
+      document.getElementById('login-err').classList.remove('hidden');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    document.getElementById('login-err').textContent = 'خطأ في الاتصال بالخادم';
+    document.getElementById('login-err').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+}
+
+// ── Logout ──
+function doLogout() {
+  clearToken();
+  localStorage.removeItem('lc_isAdmin');
+  showPage('public');
+}
+
+// ── Load Dashboard ──
+async function loadDashboard() {
+  try {
+    const res = await fetch(`${API_URL}/user/profile`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    
+    if (!data.success) {
+      doLogout();
+      return;
+    }
+    
+    const user = data.user;
+    document.getElementById('dash-name').textContent = user.name;
+    document.getElementById('dash-username').textContent = user.name.split(' ')[0];
+    document.getElementById('dash-avatar').textContent = user.name.charAt(0);
+    document.getElementById('dash-capital').textContent = Number(user.capital || 0).toLocaleString();
+    document.getElementById('dash-balance').textContent = Number(user.balance || 0).toLocaleString();
+    
+    const joinDate = new Date(user.createdAt).toLocaleDateString('ar-LB');
+    document.getElementById('dash-join').textContent = joinDate;
+    
+    const badge = document.getElementById('dash-status-badge');
+    const statusMap = { active: ['badge-active','نشط ✓'], pending: ['badge-pending','قيد المراجعة'], suspended: ['badge-suspended','موقوف'] };
+    const [cls, label] = statusMap[user.status] || statusMap.pending;
+    badge.className = `${cls} px-4 py-1.5 rounded-full text-sm font-bold`;
+    badge.textContent = label;
+    
+    document.getElementById('pv-name').textContent = user.name;
+    document.getElementById('pv-email').textContent = user.email;
+    document.getElementById('pv-country').textContent = user.country || '—';
+    document.getElementById('pv-phone').textContent = user.phone || '—';
+    
+    document.getElementById('pe-name').value = user.name;
+    document.getElementById('pe-country').value = user.country || '';
+    document.getElementById('pe-phone').value = user.phone || '';
+    
+    const depositMsg = encodeURIComponent(`مرحباً، أريد الإيداع في حسابي\nالاسم: ${user.name}\nالبريد: ${user.email}`);
+    const withdrawMsg = encodeURIComponent(`مرحباً، أريد سحب أرباحي\nالاسم: ${user.name}\nالبريد: ${user.email}\nالرصيد: $${user.balance}`);
+    document.getElementById('deposit-btn').href = `https://wa.me/message/OSOFPJLLHFAAH1?text=${depositMsg}`;
+    document.getElementById('withdraw-btn').href = `https://wa.me/message/OSOFPJLLHFAAH1?text=${withdrawMsg}`;
+    
+    if (user.note) {
+      document.getElementById('admin-note-box').classList.remove('hidden');
+      document.getElementById('admin-note-text').textContent = user.note;
+    }
+  } catch (err) {
+    console.error('Load dashboard error:', err);
+  }
+}
+
+// ── Save Profile ──
+async function saveProfile(e) {
+  e.preventDefault();
+  try {
+    const res = await fetch(`${API_URL}/user/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        name: document.getElementById('pe-name').value.trim(),
+        country: document.getElementById('pe-country').value.trim(),
+        phone: document.getElementById('pe-phone').value.trim()
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      loadDashboard();
+      toggleEditProfile();
+    }
+  } catch (err) {
+    console.error('Save profile error:', err);
+  }
+}
+
+// ── Toggle Edit Profile ──
+function toggleEditProfile() {
+  document.getElementById('profile-view').classList.toggle('hidden');
+  document.getElementById('profile-edit').classList.toggle('hidden');
+  document.getElementById('edit-profile-btn').textContent = 
+    document.getElementById('profile-edit').classList.contains('hidden') ? 'تعديل' : 'إلغاء';
+}
+
+// ── Load Admin ──
+async function loadAdmin() {
+  try {
+    const [usersRes, statsRes] = await Promise.all([
+      fetch(`${API_URL}/admin/users`, { headers: { 'Authorization': `Bearer ${getToken()}` } }),
+      fetch(`${API_URL}/admin/stats`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
+    ]);
+    
+    const usersData = await usersRes.json();
+    const statsData = await statsRes.json();
+    
+    if (usersData.success) renderTable(usersData.users);
+    if (statsData.success) {
+      const s = statsData.stats;
+      document.getElementById('stat-total').textContent = s.total;
+      document.getElementById('stat-active').textContent = s.active;
+      document.getElementById('stat-pending').textContent = s.pending;
+      document.getElementById('stat-capital').textContent = '$' + s.totalCapital.toLocaleString();
+    }
+  } catch (err) {
+    console.error('Load admin error:', err);
+  }
+}
+
+// ── Render Table ──
+function renderTable(users) {
+  const tbody = document.getElementById('users-tbody');
+  const noUsers = document.getElementById('no-users');
+  
+  if (!users.length) {
+    tbody.innerHTML = '';
+    noUsers.classList.remove('hidden');
+    return;
+  }
+  
+  noUsers.classList.add('hidden');
+  const statusMap = { active: ['badge-active','نشط'], pending: ['badge-pending','قيد المراجعة'], suspended: ['badge-suspended','موقوف'] };
+  
+  tbody.innerHTML = users.map((u, i) => {
+    const [cls, label] = statusMap[u.status] || statusMap.pending;
+    return `<tr class="hover:bg-[#f5f3ef] dark:hover:bg-[#3a3628] transition-colors">
+      <td class="px-4 py-3 text-[#9a8a7a]">${i+1}</td>
+      <td class="px-4 py-3 font-semibold">${u.name}</td>
+      <td class="px-4 py-3 text-[#6a5a4a] dark:text-[#9a9283] hidden md:table-cell">${u.email}</td>
+      <td class="px-4 py-3 hidden sm:table-cell">${u.country || '—'}</td>
+      <td class="px-4 py-3 font-bold text-accent">$${Number(u.capital||0).toLocaleString()}</td>
+      <td class="px-4 py-3 font-bold text-green-600">$${Number(u.balance||0).toLocaleString()}</td>
+      <td class="px-4 py-3"><span class="${cls} px-2.5 py-1 rounded-full text-xs font-bold">${label}</span></td>
+      <td class="px-4 py-3">
+        <div class="flex gap-2">
+          <button onclick="openEditModal('${u.id}')" class="text-xs bg-accent/10 text-accent hover:bg-accent hover:text-white px-3 py-1.5 rounded-lg font-semibold transition">تعديل</button>
+          <button onclick="deleteUser('${u.id}')" class="text-xs bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition">حذف</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Filter Users ──
+function filterUsers(q) {
+  // TODO: implement client-side filtering or fetch from server
+}
+
+// ── Open Edit Modal ──
+async function openEditModal(id) {
+  try {
+    const users = document.getElementById('users-tbody').querySelectorAll('tr');
+    const token = getToken();
+    // Fetch all users and find the one
+    const res = await fetch(`${API_URL}/admin/users`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const user = data.users.find(u => u.id === id);
+    if (!user) return;
+    
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-name').value = user.name;
+    document.getElementById('edit-email').value = user.email;
+    document.getElementById('edit-country').value = user.country || '';
+    document.getElementById('edit-phone').value = user.phone || '';
+    document.getElementById('edit-capital').value = user.capital || 0;
+    document.getElementById('edit-balance').value = user.balance || 0;
+    document.getElementById('edit-status').value = user.status || 'pending';
+    document.getElementById('edit-note').value = user.note || '';
+    document.getElementById('edit-modal').classList.remove('hidden');
+  } catch (err) {
+    console.error('Open edit modal error:', err);
+  }
+}
+
+// ── Close Edit Modal ──
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.add('hidden');
+}
+
+// ── Save Edit User ──
+async function saveEditUser(e) {
+  e.preventDefault();
+  const userId = document.getElementById('edit-id').value;
+  
+  try {
+    const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        name: document.getElementById('edit-name').value,
+        email: document.getElementById('edit-email').value,
+        country: document.getElementById('edit-country').value,
+        phone: document.getElementById('edit-phone').value,
+        capital: Number(document.getElementById('edit-capital').value),
+        balance: Number(document.getElementById('edit-balance').value),
+        status: document.getElementById('edit-status').value,
+        note: document.getElementById('edit-note').value
+      })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      closeEditModal();
+      loadAdmin();
+    }
+  } catch (err) {
+    console.error('Save edit user error:', err);
+  }
+}
+
+// ── Save Add User ──
+async function saveAddUser(e) {
+  e.preventDefault();
+  
+  try {
+    const res = await fetch(`${API_URL}/admin/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        name: document.getElementById('add-name').value,
+        email: document.getElementById('add-email').value,
+        password: document.getElementById('add-pass').value,
+        country: document.getElementById('add-country').value,
+        phone: document.getElementById('add-phone').value,
+        capital: Number(document.getElementById('add-capital').value),
+        balance: Number(document.getElementById('add-balance').value),
+        status: document.getElementById('add-status').value
+      })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('add-modal').classList.add('hidden');
+      e.target.reset();
+      loadAdmin();
+    }
+  } catch (err) {
+    console.error('Save add user error:', err);
+  }
+}
+
+// ── Delete User ──
+async function deleteUser(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
+  
+  try {
+    const res = await fetch(`${API_URL}/admin/users/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    
+    const data = await res.json();
+    if (data.success) loadAdmin();
+  } catch (err) {
+    console.error('Delete user error:', err);
+  }
+}
+
+// ── Toggle FAQ ──
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+  el.parentElement.querySelector('.faq-answer').classList.toggle('open');
+}
+
+// Initialize on load
+window.addEventListener('load', initApp);
+</script>
+</body>
+</html>
